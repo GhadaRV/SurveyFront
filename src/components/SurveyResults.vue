@@ -35,7 +35,7 @@ export default {
       try {
         const surveyId = this.$route.params.id;
         const response = await fetch(
-          `http://localhost:8081/api/surveys/${surveyId}/results`
+          `https://surveyback-vb8s.onrender.com/api/surveys/${surveyId}/results`
         );
         this.survey = await response.json();
         this.$nextTick(() => {
