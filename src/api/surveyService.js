@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const API_URL = 'https://surveyback-vb8s.onrender.com';
 
-
 export const fetchSurveys = async () => {
     try {
         const response = await axios.get(`${API_URL}/surveys`);

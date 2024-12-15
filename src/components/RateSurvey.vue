@@ -47,14 +47,16 @@
           </div>
         </div>
       </div>
+      <div v-if="loading2" class="flex justify-center mb-4">
+        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
       <button
         @click="submitRatings"
         class="block mx-auto bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition duration-200"
-      >
-        Submit Ratings
+      > 
+      {{ loading2 ? 'Submitting...' : 'Submit Ratings' }}
       </button>
     </div>
-
     <div v-else-if="!loading && !survey">
       <p class="text-center text-gray-500">Survey not found.</p>
     </div>
@@ -94,6 +96,7 @@ const survey = ref(null);
 const ratings = ref([]);
 const hovered = ref([]); 
 const loading = ref(true);
+const loading2 = ref(false); 
 const showModal = ref(false);
 const route = useRoute();
 const router = useRouter();
@@ -119,11 +122,15 @@ const submitRatings = async () => {
       alert("Please rate all questions before submitting.");
       return;
     }
+    loading2.value = true;
     await apiSubmitRatings(surveyId, ratings.value);
     showModal.value = true; 
   } catch (error) {
     console.error("Error submitting ratings:", error);
     alert("Failed to submit ratings. Please try again.");
+  }
+  finally {
+    loading2.value = false;
   }
 };
 
