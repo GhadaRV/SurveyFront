@@ -2,7 +2,6 @@
   <div class="max-w-2xl mx-auto p-16 bg-white rounded-lg shadow-lg">
     <h1 class="text-3xl font-bold mb-6">Create Survey</h1>
     <form @submit.prevent="submitSurvey">
-     
       <div class="mb-4">
         <label for="title" class="block text-sm font-medium text-gray-700">Survey Title</label>
         <input
@@ -37,11 +36,16 @@
         </button>
       </div>
 
+      <div v-if="loading" class="flex justify-center mb-4">
+        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+
       <button
         type="submit"
-        class="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+        :disabled="loading"
+        class="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition disabled:bg-gray-400"
       >
-        Create Survey
+        {{ loading ? 'Submitting...' : 'Create Survey' }}
       </button>
     </form>
 
@@ -70,7 +74,7 @@ import { createSurvey, addQuestionsToSurvey } from '../api/surveyService';
 
 const survey = ref({
   title: '',
-  questions: [{ questionText: '' }] 
+  questions: [{ questionText: '' }]
 });
 
 const errors = ref({
@@ -78,13 +82,13 @@ const errors = ref({
   questions: []
 });
 
-const showSuccessModal = ref(false); 
+const showSuccessModal = ref(false);
+const loading = ref(false); 
 const router = useRouter();
 
 const validateForm = () => {
   errors.value = { title: '', questions: [] };
   let valid = true;
-
 
   if (!survey.value.title) {
     errors.value.title = 'Title is required.';
@@ -106,22 +110,22 @@ const addQuestion = () => {
 };
 
 const submitSurvey = async () => {
-  if (!validateForm()) return; 
+  if (!validateForm()) return;
 
+  loading.value = true;
   try {
-  
     const surveyData = await createSurvey(survey.value.title);
-
     await addQuestionsToSurvey(surveyData.id, survey.value.questions);
-
     showSuccessModal.value = true;
   } catch (error) {
     alert('Error creating survey. Please try again.');
+  } finally {
+    loading.value = false;
   }
 };
 
 const redirectToAdmin = () => {
   showSuccessModal.value = false;
-  router.push('/admin'); 
+  router.push('/admin');
 };
 </script>

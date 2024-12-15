@@ -3,7 +3,10 @@
     <h1 class="mt-4 text-3xl font-bold text-center text-green-700 mb-8">
       Your anonymous participation matters!
     </h1>
-    <div v-if="survey">
+    <div v-if="loading" class="text-center">
+      <p class="text-gray-500">Loading survey...</p>
+    </div>
+    <div v-if="!loading && survey">
       <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">{{ survey.name }}</h2>
       <div
         v-for="(question, index) in survey.questions"
@@ -51,18 +54,19 @@
         Submit Ratings
       </button>
     </div>
-    <div v-else>
-      <p class="text-center text-gray-500">Loading...</p>
+
+    <div v-else-if="!loading && !survey">
+      <p class="text-center text-gray-500">Survey not found.</p>
     </div>
-
-
     <div
       v-if="showModal"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
       <div class="bg-white rounded-lg shadow-lg p-6 w-96">
         <h3 class="text-xl font-bold text-center text-green-600 mb-4">Success!</h3>
-        <p class="text-gray-700 text-center mb-6">Your rating has been submitted successfully. Thank you for your participation :)</p>
+        <p class="text-gray-700 text-center mb-6">
+          Your rating has been submitted successfully. Thank you for your participation :)
+        </p>
         <button
           @click="closeModal"
           class="block mx-auto bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-200"
@@ -81,7 +85,6 @@ import {
   getSurveyById,
   submitRatings as apiSubmitRatings,
 } from "../api/surveyService";
-
 
 defineOptions({
   name: 'RateSurvey'
@@ -128,7 +131,6 @@ const closeModal = () => {
   showModal.value = false;
    router.push('/');
 };
-
 
 onMounted(() => {
   fetchSurvey();

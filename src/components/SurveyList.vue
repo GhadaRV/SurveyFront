@@ -3,7 +3,12 @@
     <div class="pt-20 p-4 space-y-6">
       <h2 class="mt-4 text-3xl font-bold text-center mb-8 text-gray-700">List of available surveys</h2>
 
-      <div v-if="surveys.length > 0">
+      <div v-if="loading" class="flex justify-center items-center mt-10">
+        <div class="loader"></div> 
+        <p class="ml-4 text-lg text-gray-500">Loading surveys, please wait...</p>
+      </div>
+
+      <div v-else-if="surveys.length > 0">
         <table class="p-20 w-3/4 bg-white rounded-lg shadow-md mt-4 mx-auto">
           <thead>
             <tr class="border-b">
@@ -20,6 +25,7 @@
           </tbody>
         </table>
       </div>
+
       <div v-else class="mt-4 text-gray-500 text-lg">
         No surveys available to display.
       </div>
@@ -53,10 +59,23 @@ export default {
 
     onMounted(getSurveys);
 
-  
     return { surveys, loading };
-  },
-  methods:{}
+  }
 };
 </script>
 
+<style scoped>
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
